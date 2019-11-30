@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Your personal password storage"
+        android:textAlignment="center"
+        android:textSize="20dp">
+    </TextView>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp">
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/etName"
+            android:layout_gravity="center_horizontal"
+            android:hint="Name"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+        </EditText>
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/etLogin"
+            android:layout_gravity="center_horizontal"
+            android:hint="Login"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+        </EditText>
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/etPassword"
+            android:layout_gravity="center_horizontal"
+            android:hint="Password"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+        </EditText>
+        <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnAdd"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:text="Add"
+            style="@style/Widget.AppCompat.Button.Colored">
+        </Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnViewAll"
+            android:layout_marginLeft="180dp"
+            android:layout_marginTop="20dp"
+            android:text="View All"
+            style="@style/Widget.AppCompat.Button.Colored">
+        </Button>
+    </LinearLayout>
+</LinearLayout>
+</LinearLayout>
