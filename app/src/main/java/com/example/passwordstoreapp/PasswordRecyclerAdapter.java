@@ -3,11 +3,15 @@ package com.example.passwordstoreapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +22,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     private LayoutInflater inflater;
     private List<UserPasswordDB> userPasswordDBList;
     private Context mcontext;
+    private boolean isChecked=true;
 
     PasswordRecyclerAdapter(Context context, List<UserPasswordDB> userPasswordDBList) {
         this.userPasswordDBList = userPasswordDBList;
@@ -30,13 +35,26 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         return new ViewHolder(view);
     }
 
-    public void onBindViewHolder(PasswordRecyclerAdapter.ViewHolder holder, final int position){
+    public void onBindViewHolder(final PasswordRecyclerAdapter.ViewHolder holder, final int position){
         final UserPasswordDB userPasswordDB=userPasswordDBList.get(position);
 
         holder.tvName.setText(userPasswordDB.getName());
         holder.tvLogin.setText(userPasswordDB.getLogin());
         holder.tvPassword.setText(userPasswordDB.getPassword());
         holder.tvID.setText("ID: "+userPasswordDB.getId());
+
+        holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(holder.chkPassword.isChecked())
+                holder.tvPassword.setTransformationMethod(null);
+                if(!holder.chkPassword.isChecked())
+                    holder.tvPassword.setTransformationMethod(new PasswordTransformationMethod());
+            }
+        }
+        );
+
 
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +116,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvID, tvName, tvLogin, tvPassword;
         Button btnEdit, btnDelete;
+        CheckBox chkPassword;
 
         public ViewHolder(View view) {
             super(view);
@@ -107,6 +126,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
             tvPassword=view.findViewById(R.id.tvPassword);
             btnEdit=view.findViewById(R.id.btnEdit);
             btnDelete=view.findViewById(R.id.btnDelete);
+            chkPassword=view.findViewById(R.id.chkPassword);
         }
     }
 }

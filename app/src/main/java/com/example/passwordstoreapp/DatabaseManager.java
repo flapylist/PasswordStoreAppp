@@ -59,7 +59,6 @@ public class DatabaseManager {
         try {
                     userPasswordDBLongDao.createOrUpdate(userPasswordDB);
                     count=1;
-
         }catch (SQLException e){
             e.printStackTrace();
             Toast.makeText(mcontext,"No save data",Toast.LENGTH_SHORT).show();

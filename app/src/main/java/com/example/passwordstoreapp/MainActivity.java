@@ -61,9 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void addItemData(UserPasswordDB userPasswordDB){
         int isSucces=DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB,false);
-        if(isSucces==1) Toast.makeText(this,"Item edited", Toast.LENGTH_SHORT).show();
-        else if(isSucces==0) Toast.makeText(this,"Item added",Toast.LENGTH_SHORT).show();
-        else Toast.makeText(this,"Item add failed",Toast.LENGTH_SHORT).show();
+        if(isSucces==1) Toast.makeText(this,"Record complete", Toast.LENGTH_SHORT).show();
+        else Toast.makeText(this,"Record failed",Toast.LENGTH_SHORT).show();
     }
 
     public List<UserPasswordDB> getAllItems(){
