@@ -25,7 +25,7 @@ public class ListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_listview);
 
-        recyclerView=findViewById(R.id.list);
+        recyclerView=findViewById(R.id.recyclerView);
         userPasswordDBList=getAllUsers();
         adapter=new PasswordRecyclerAdapter(this,userPasswordDBList);
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());

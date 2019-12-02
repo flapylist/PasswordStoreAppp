@@ -26,7 +26,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     }
 
     public PasswordRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.list_view, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view,parent,false);
         return new ViewHolder(view);
     }
 
