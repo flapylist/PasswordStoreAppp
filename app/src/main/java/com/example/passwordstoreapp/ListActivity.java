@@ -28,10 +28,9 @@ public class ListActivity extends AppCompatActivity {
         recyclerView=findViewById(R.id.recyclerView);
         userPasswordDBList=getAllUsers();
         adapter=new PasswordRecyclerAdapter(this,userPasswordDBList);
-        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
+        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-
     }
 
     public void presentAlert(final String name, final String login, final String password, final Long id){
@@ -66,6 +65,7 @@ public class ListActivity extends AppCompatActivity {
                         userPasswordDB.setId(id);
 
                         DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB,true);
+                        recreate();
 
                     }
                 })

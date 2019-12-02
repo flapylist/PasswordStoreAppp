@@ -26,7 +26,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     }
 
     public PasswordRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_view,parent,false);
+        View view = inflater.inflate(R.layout.list_view,parent,false);
         return new ViewHolder(view);
     }
 
@@ -95,7 +95,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         notifyItemChanged(position,userPasswordDBList.size());
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvID, tvName, tvLogin, tvPassword;
         Button btnEdit, btnDelete;
 

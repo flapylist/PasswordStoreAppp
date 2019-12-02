@@ -36,7 +36,7 @@ public class UserPasswordDB {
     }
 
     public void setLogin(String login) {
-        login = login;
+        this.login = login;
     }
 
     @DatabaseField

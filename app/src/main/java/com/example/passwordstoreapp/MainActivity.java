@@ -57,8 +57,6 @@ public class MainActivity extends AppCompatActivity {
             addItemData(userPasswordDB);
             userPasswordDBList=getAllItems();
         }
-
-
     }
 
     public void addItemData(UserPasswordDB userPasswordDB){

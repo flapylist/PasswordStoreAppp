@@ -1,6 +1,7 @@
 package com.example.passwordstoreapp;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.j256.ormlite.cipher.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -41,23 +42,12 @@ public class DatabaseManager {
         if (id != null) deleteBuilder.where().eq(ID, id);
         deleteBuilder.delete();
         return 0;
-    }catch (SQLException e){
+        }catch (SQLException e){
             e.printStackTrace();
             return -1;
         }
     }
 
-    public boolean isItemExist(Long id) {
-        QueryBuilder queryBuilder = userPasswordDBLongDao.queryBuilder();
-        boolean isExist = false;
-        try{
-        if (queryBuilder.where().eq(ID, id).countOf() > 0) isExist = true;
-        else isExist = false;
-    }catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return isExist;
-    }
 
     public int insertItem(UserPasswordDB userPasswordDB, boolean isEdit){
         int count=0;
@@ -67,19 +57,12 @@ public class DatabaseManager {
         Long id=userPasswordDB.getId();
 
         try {
-
-            if(isItemExist(id)){
-                if(isEdit){
-                    deleteItem(id);
-                    userPasswordDBLongDao.create(userPasswordDB);
+                    userPasswordDBLongDao.createOrUpdate(userPasswordDB);
                     count=1;
-                }else {
-                    userPasswordDBLongDao.create(userPasswordDB);
-                    count=0;
-                }
-            }
+
         }catch (SQLException e){
             e.printStackTrace();
+            Toast.makeText(mcontext,"No save data",Toast.LENGTH_SHORT).show();
             count=-1;
             return count;
         }
