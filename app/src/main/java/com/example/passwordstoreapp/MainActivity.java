@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import io.michaelrocks.paranoid.Obfuscate;
+@Obfuscate
 public class MainActivity extends AppCompatActivity {
 
     EditText etName, etLogin, etPassword;
@@ -60,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addItemData(UserPasswordDB userPasswordDB){
-        int isSucces=DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB,false);
-        if(isSucces==1) Toast.makeText(this,"Record complete", Toast.LENGTH_SHORT).show();
-        else Toast.makeText(this,"Record failed",Toast.LENGTH_SHORT).show();
+        DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB,false);
     }
 
     public List<UserPasswordDB> getAllItems(){

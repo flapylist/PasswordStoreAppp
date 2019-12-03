@@ -17,6 +17,6 @@
         tools:itemCount="5"
         tools:orientation="horizontal"
         tools:scrollbars="horizontal"
-        tools:spanCount="2"/>
+        tools:spanCount="2" />
 
 </LinearLayout>

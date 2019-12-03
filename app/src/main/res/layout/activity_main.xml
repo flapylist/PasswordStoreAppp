@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Your personal password storage"
+        android:text="@string/hellowrd"
         android:textAlignment="center"
         android:textSize="20dp">
     </TextView>
@@ -18,13 +18,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="20dp">
-
         <EditText
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:id="@+id/etName"
             android:layout_gravity="center_horizontal"
-            android:hint="Name"
+            android:hint="@string/nameHint"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
         </EditText>
@@ -33,7 +32,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/etLogin"
             android:layout_gravity="center_horizontal"
-            android:hint="Login"
+            android:hint="@string/loginHint"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp">
         </EditText>
@@ -42,7 +41,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/etPassword"
             android:layout_gravity="center_horizontal"
-            android:hint="Password"
+            android:hint="@string/passwordHint"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:inputType="textPassword">
@@ -59,7 +58,7 @@
             android:id="@+id/btnAdd"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
-            android:text="Add"
+            android:text="@string/add"
             style="@style/Widget.AppCompat.Button.Colored">
         </Button>
         <Button
@@ -68,7 +67,7 @@
             android:id="@+id/btnViewAll"
             android:layout_marginLeft="180dp"
             android:layout_marginTop="20dp"
-            android:text="View All"
+            android:text="@string/viewAll"
             style="@style/Widget.AppCompat.Button.Colored">
         </Button>
     </LinearLayout>

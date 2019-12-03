@@ -1,6 +1,7 @@
 package com.example.passwordstoreapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.j256.ormlite.cipher.android.apptools.OpenHelperManager;
@@ -17,6 +18,7 @@ public class DatabaseManager {
     private static DatabaseManager INSTANCE;
     private DatabaseHelper databaseHelper;
 
+    final String TAG="MyLog";
     private Dao<UserPasswordDB,Long> userPasswordDBLongDao;
     private static String NAME="name";
     private static String LOGIN="login";
@@ -35,21 +37,25 @@ public class DatabaseManager {
         return INSTANCE;
     }
 
-    public int deleteItem(Long id) {
+    public void deleteItem(Long id) {
         try{
-        if (userPasswordDBLongDao == null) return -1;
+        if (userPasswordDBLongDao == null) {
+            Toast.makeText(mcontext,"Record failed",Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"No DAO Exist");
+            return;
+        }
         DeleteBuilder deleteBuilder = userPasswordDBLongDao.deleteBuilder();
         if (id != null) deleteBuilder.where().eq(ID, id);
         deleteBuilder.delete();
-        return 0;
+        Toast.makeText(mcontext,"Delete complete",Toast.LENGTH_SHORT).show();
         }catch (SQLException e){
+            Toast.makeText(mcontext,"Delete failed",Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            return -1;
         }
     }
 
 
-    public int insertItem(UserPasswordDB userPasswordDB, boolean isEdit){
+    public void insertItem(UserPasswordDB userPasswordDB, boolean isEdit){
         int count=0;
         String name=userPasswordDB.getName()!=null ? userPasswordDB.getName() : "";
         String login=userPasswordDB.getLogin() !=null ? userPasswordDB.getLogin() : "";
@@ -58,14 +64,11 @@ public class DatabaseManager {
 
         try {
                     userPasswordDBLongDao.createOrUpdate(userPasswordDB);
-                    count=1;
+                    Toast.makeText(mcontext,"Record complete",Toast.LENGTH_SHORT).show();
         }catch (SQLException e){
+            Toast.makeText(mcontext,"Record failed",Toast.LENGTH_SHORT).show();
             e.printStackTrace();
-            Toast.makeText(mcontext,"No save data",Toast.LENGTH_SHORT).show();
-            count=-1;
-            return count;
         }
-        return count;
     }
 
     public void releaseData(){
@@ -78,6 +81,7 @@ public class DatabaseManager {
 
     public void clearData(){
         databaseHelper.clearTable();
+        Toast.makeText(mcontext,"Clear Data complete",Toast.LENGTH_SHORT).show();
     }
 
     public List<UserPasswordDB> getAllItems(){

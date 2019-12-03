@@ -3,6 +3,8 @@ package com.example.passwordstoreapp;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -32,6 +34,7 @@ public class ListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
+
 
     public void presentAlert(final String name, final String login, final String password, final Long id){
         final EditText etName, etLogin, etPassword;
@@ -82,4 +85,5 @@ public class ListActivity extends AppCompatActivity {
     public List<UserPasswordDB> getAllUsers(){
         return DatabaseManager.getInstance(getApplicationContext()).getAllItems();
     }
+
 }
