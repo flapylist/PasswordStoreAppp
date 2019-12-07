@@ -1,0 +1,63 @@
+package com.example.passwordstoreapp;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.view.View;
+
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+
+public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
+    private PasswordRecyclerAdapter adapter;
+
+    private ColorDrawable background;
+
+    public SwipeToDeleteCallback(PasswordRecyclerAdapter adapter) {
+        super(0, ItemTouchHelper.RIGHT);
+        this.adapter = adapter;
+
+        background = new ColorDrawable(Color.RED);
+    }
+
+    @Override
+    public void onSwiped(RecyclerView.ViewHolder holder, int derection) {
+        int position = holder.getAdapterPosition();
+        EventBus.getDefault().post(new DeleteEvent(position));
+    }
+
+    @Override
+    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+        // used for up and down movements
+        return false;
+    }
+
+    @Override
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                            float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        super.onChildDraw(c, recyclerView, viewHolder, dX,
+                dY, actionState, isCurrentlyActive);
+
+        View itemView = viewHolder.itemView;
+        int backGroundCornerOffset = 15;
+
+
+
+        if (dX > 0) { // Swiping to the right
+
+
+            background.setBounds(itemView.getLeft(), itemView.getTop(),
+                    itemView.getLeft() + ((int) dX) + backGroundCornerOffset,
+                    itemView.getBottom());
+        } else background.setBounds(0,0,0,0);
+
+        background.draw(c);
+
+    }
+
+
+}

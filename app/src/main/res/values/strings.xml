@@ -10,4 +10,11 @@
     <string name="delete">Delete</string>
     <string name="id">ID: </string>
     <string name="edit">Edit</string>
+    <string name="SaveField">Save</string>
+    <string name="CancelField">Cancel</string>
+    <string name="EditAlertTitle">Edit record: </string>
+    <string name="AddAlertTitle">Add new record: </string>
+    <string name="DeleteAlertTitle">Are you really want delete record </string>
+    <string name="YesField">Yes</string>
+    <string name="NoField">No</string>
 </resources>

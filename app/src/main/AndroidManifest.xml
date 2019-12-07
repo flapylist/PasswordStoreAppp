@@ -12,11 +12,6 @@
         android:theme="@style/AppTheme"
         android:name=".ReleaseApp">
 
-
-
-        <activity android:name=".ListActivity">
-
-        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

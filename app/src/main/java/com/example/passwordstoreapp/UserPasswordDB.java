@@ -13,10 +13,6 @@ public class UserPasswordDB {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @DatabaseField
     private String name;
 

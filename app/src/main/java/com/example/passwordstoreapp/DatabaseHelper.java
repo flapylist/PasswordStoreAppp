@@ -40,14 +40,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion){
-        try {
-            if (isTableExist(database, "table_name"))
-                TableUtils.dropTable(connectionSource, UserPasswordDB.class, false);
 
-            onCreate(database, connectionSource);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     public boolean isTableExist(SQLiteDatabase db, String tableName){

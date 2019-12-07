@@ -1,20 +1,17 @@
 package com.example.passwordstoreapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -41,7 +38,8 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         holder.tvName.setText(userPasswordDB.getName());
         holder.tvLogin.setText(userPasswordDB.getLogin());
         holder.tvPassword.setText(userPasswordDB.getPassword());
-        holder.tvID.setText("ID: "+userPasswordDB.getId());
+        holder.tvID.setText(R.string.id+userPasswordDB.getId().toString());
+        holder.bind(userPasswordDB);
 
         holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -54,46 +52,6 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
             }
         }
         );
-
-
-        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mcontext instanceof ListActivity){
-                    ((ListActivity) mcontext).presentAlert(userPasswordDB.getName(),userPasswordDB.getLogin(), userPasswordDB.getPassword(),
-                            userPasswordDB.getId());
-                    notifyDataSetChanged();
-                }
-            }
-        });
-
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presentAlertDelete(position, userPasswordDB.getId());
-            }
-        });
-    }
-
-    public void presentAlertDelete(final int position, final Long id){
-        AlertDialog.Builder builder=new AlertDialog.Builder(mcontext);
-        builder.setTitle("Delete")
-                .setMessage("Are you really want delete record?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        DatabaseManager.getInstance(mcontext).deleteItem(id);
-                        deleteUser(position);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert=builder.create();
-        alert.show();
     }
 
     public void updateUserList(List<UserPasswordDB> list){
@@ -114,19 +72,33 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvID, tvName, tvLogin, tvPassword;
-        Button btnEdit, btnDelete;
+        TextView tvName, tvLogin, tvPassword,tvID;
         CheckBox chkPassword;
 
         public ViewHolder(View view) {
             super(view);
-            tvID=view.findViewById(R.id.tvID);
+            tvID=view.findViewById(R.id.ID);
             tvName=view.findViewById(R.id.tvName);
             tvLogin=view.findViewById(R.id.tvLogin);
             tvPassword=view.findViewById(R.id.tvPassword);
-            btnEdit=view.findViewById(R.id.btnEdit);
-            btnDelete=view.findViewById(R.id.btnDelete);
             chkPassword=view.findViewById(R.id.chkPassword);
         }
+
+        public void bind (final UserPasswordDB item){
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    EventBus.getDefault().post(new AddEvent(item));
+                    return false;
+                }
+            });
+        }
     }
+
+    public Context getContext(){
+        return mcontext;
+    }
+
+
+
 }

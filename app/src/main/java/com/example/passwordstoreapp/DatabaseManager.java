@@ -20,10 +20,10 @@ public class DatabaseManager {
 
     final String TAG="MyLog";
     private Dao<UserPasswordDB,Long> userPasswordDBLongDao;
-    private static String NAME="name";
-    private static String LOGIN="login";
-    private static String PASSWORD="password";
-    private static String ID="id";
+    private final static String NAME="name";
+    private final static String LOGIN="login";
+    private final static String PASSWORD="password";
+    private final static String ID="id";
 
     public DatabaseManager(Context context){
         mcontext=context;
@@ -55,13 +55,7 @@ public class DatabaseManager {
     }
 
 
-    public void insertItem(UserPasswordDB userPasswordDB, boolean isEdit){
-        int count=0;
-        String name=userPasswordDB.getName()!=null ? userPasswordDB.getName() : "";
-        String login=userPasswordDB.getLogin() !=null ? userPasswordDB.getLogin() : "";
-        String password=userPasswordDB.getPassword() !=null ? userPasswordDB.getPassword() : "";
-        Long id=userPasswordDB.getId();
-
+    public void insertItem(UserPasswordDB userPasswordDB){
         try {
                     userPasswordDBLongDao.createOrUpdate(userPasswordDB);
                     Toast.makeText(mcontext,"Record complete",Toast.LENGTH_SHORT).show();
