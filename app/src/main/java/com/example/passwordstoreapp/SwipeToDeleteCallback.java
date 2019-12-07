@@ -32,7 +32,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        // used for up and down movements
+
         return false;
     }
 
@@ -47,7 +47,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
 
 
 
-        if (dX > 0) { // Swiping to the right
+        if (dX > 0) {
 
 
             background.setBounds(itemView.getLeft(), itemView.getTop(),
