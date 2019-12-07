@@ -38,7 +38,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         holder.tvName.setText(userPasswordDB.getName());
         holder.tvLogin.setText(userPasswordDB.getLogin());
         holder.tvPassword.setText(userPasswordDB.getPassword());
-        holder.tvID.setText(R.string.id+userPasswordDB.getId().toString());
+        holder.tvID.setText("ID: "+userPasswordDB.getId().toString());
         holder.bind(userPasswordDB);
 
         holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

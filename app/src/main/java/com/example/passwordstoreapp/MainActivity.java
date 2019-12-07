@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     public void deleteAlert(Context context, final UserPasswordDB userPasswordDB){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
 
-        builder.setMessage(R.string.EditAlertTitle+userPasswordDB.getId()+" ?")
+        builder.setMessage("Are you really want delete record "+userPasswordDB.getId()+" ?")
                 .setPositiveButton(R.string.YesField, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
