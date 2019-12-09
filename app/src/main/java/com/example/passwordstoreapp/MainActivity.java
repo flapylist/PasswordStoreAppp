@@ -40,9 +40,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_listview);
-        mcontext=this;
-        ftbtn=findViewById(R.id.floating_action_button);
         EventBus.getDefault().register(this);
+        userPasswordDBList=getAllUsers();
+        mcontext=this;
+
+        ftbtn=findViewById(R.id.floating_action_button);
         ftbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,13 +53,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         cl=findViewById(R.id.coordinator);
-
         recyclerView=findViewById(R.id.recyclerView);
-        userPasswordDBList=getAllUsers();
+
         adapter=new PasswordRecyclerAdapter(this, userPasswordDBList);
         RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(this);
+
         ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -70,9 +73,9 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteEvent(DeleteEvent event){
         final UserPasswordDB userPasswordDB=userPasswordDBList.get(event.position);
-
         deleteItem(userPasswordDB);
         adapter.deleteItem(event.position);
+
         showUndoSnackbar(userPasswordDB,event.position);
     }
 

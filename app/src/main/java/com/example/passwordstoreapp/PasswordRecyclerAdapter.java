@@ -19,7 +19,6 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     private LayoutInflater inflater;
     private List<UserPasswordDB> userPasswordDBList;
     private Context mcontext;
-    private boolean isChecked=true;
 
     PasswordRecyclerAdapter(Context context, List<UserPasswordDB> userPasswordDBList) {
         this.userPasswordDBList = userPasswordDBList;
@@ -39,7 +38,8 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         holder.tvLogin.setText(userPasswordDB.getLogin());
         holder.tvPassword.setText(userPasswordDB.getPassword());
         holder.tvID.setText("ID: "+userPasswordDB.getId().toString());
-        holder.bind(userPasswordDB);
+
+        holder.setViewLongClick(userPasswordDB);
 
         holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -92,7 +92,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
             chkPassword=view.findViewById(R.id.chkPassword);
         }
 
-        public void bind (final UserPasswordDB item){
+        public void setViewLongClick(final UserPasswordDB item){
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
