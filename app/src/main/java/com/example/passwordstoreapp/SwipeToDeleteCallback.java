@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +22,7 @@ public class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
         super(0, ItemTouchHelper.RIGHT);
         this.adapter = adapter;
 
-        background = new ColorDrawable(Color.RED);
+        background=new ColorDrawable(ContextCompat.getColor(adapter.getContext(),R.color.deleteColor));
     }
 
     @Override

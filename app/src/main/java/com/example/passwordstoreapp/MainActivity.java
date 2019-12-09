@@ -3,6 +3,8 @@ package com.example.passwordstoreapp;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     PasswordRecyclerAdapter adapter;
     FloatingActionButton ftbtn;
+    CoordinatorLayout cl;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
                 addAlert(mcontext);
             }
         });
+
+        cl=findViewById(R.id.coordinator);
 
         recyclerView=findViewById(R.id.recyclerView);
         userPasswordDBList=getAllUsers();
@@ -63,7 +69,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteEvent(DeleteEvent event){
-        deleteAlert(mcontext,userPasswordDBList.get(event.position));
+        final UserPasswordDB userPasswordDB=userPasswordDBList.get(event.position);
+
+        deleteItem(userPasswordDB);
+        adapter.deleteItem(event.position);
+        showUndoSnackbar(userPasswordDB,event.position);
+    }
+
+    private void showUndoSnackbar(final UserPasswordDB item, final int position){
+        Snackbar snackbar=Snackbar.make(cl,"Item deleted",Snackbar.LENGTH_LONG);
+        snackbar.setAction("Return delete", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addItem(item);
+                adapter.addItem(item,position);
+
+            }
+        })
+                .show();
     }
 
 
@@ -101,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
                             userPasswordDB.setLogin(etLogin.getText().toString());
                             userPasswordDB.setPassword(etPassword.getText().toString());
                             addItem(userPasswordDB);
+                            adapter.addItem(userPasswordDB);
+
                         }
                     }
                 })
@@ -112,28 +137,10 @@ public class MainActivity extends AppCompatActivity {
                 });
         AlertDialog alert=builder.create();
         alert.show();
+
     }
 
-    public void deleteAlert(Context context, final UserPasswordDB userPasswordDB){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
 
-        builder.setMessage("Are you really want delete record "+userPasswordDB.getId()+" ?")
-                .setPositiveButton(R.string.YesField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                      deleteItem(userPasswordDB);
-                    }
-                })
-                .setNegativeButton(R.string.NoField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        recreate();
-                    }
-                });
-        AlertDialog alert=builder.create();
-        alert.show();
-    }
     public void editAlert(Context context,final UserPasswordDB userPasswordDB){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         final EditText etName,etLogin,etPassword;
@@ -165,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                             userPasswordDB.setLogin(etLogin.getText().toString());
                             userPasswordDB.setPassword(etPassword.getText().toString());
                             addItem(userPasswordDB);
+
                         }
                     }
                 })
@@ -180,12 +188,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void addItem(UserPasswordDB userPasswordDB){
         DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB);
-        recreate();
     }
 
     public void deleteItem(UserPasswordDB userPasswordDB){
         DatabaseManager.getInstance(getApplicationContext()).deleteItem(userPasswordDB.getId());
-        recreate();
     }
     public List<UserPasswordDB> getAllUsers(){
         return DatabaseManager.getInstance(getApplicationContext()).getAllItems();

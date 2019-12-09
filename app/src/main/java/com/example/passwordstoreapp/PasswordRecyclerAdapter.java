@@ -54,10 +54,18 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         );
     }
 
-    public void updateUserList(List<UserPasswordDB> list){
-        userPasswordDBList.clear();
-        userPasswordDBList.addAll(list);
-        this.notifyDataSetChanged();
+
+
+    public void addItem(UserPasswordDB userPasswordDB){
+        userPasswordDBList.add(userPasswordDBList.size(),userPasswordDB);
+        notifyItemInserted(userPasswordDBList.size());
+
+    }
+
+    public void addItem(UserPasswordDB userPasswordDB,int position){
+        userPasswordDBList.add(position,userPasswordDB);
+        notifyItemInserted(position);
+
     }
 
     @Override
@@ -65,7 +73,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         return userPasswordDBList.size();
     }
 
-    public void deleteUser(int position){
+    public void deleteItem(int position){
         userPasswordDBList.remove(position);
         notifyItemRemoved(position);
         notifyItemChanged(position,userPasswordDBList.size());
