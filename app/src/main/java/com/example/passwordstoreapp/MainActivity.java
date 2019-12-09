@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAddEvent(AddEvent event){
-        editAlert(mcontext,event.item);
+        editAlert(mcontext,event.item, event.position);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void editAlert(Context context,final UserPasswordDB userPasswordDB){
+    public void editAlert(Context context, final UserPasswordDB userPasswordDB, final int position){
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         final EditText etName,etLogin,etPassword;
         etName=new EditText(context);
@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                             userPasswordDB.setLogin(etLogin.getText().toString());
                             userPasswordDB.setPassword(etPassword.getText().toString());
                             addItem(userPasswordDB);
+                            adapter.notifyItemChanged(position);
 
                         }
                     }

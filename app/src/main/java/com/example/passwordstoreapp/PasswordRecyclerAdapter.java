@@ -39,7 +39,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         holder.tvPassword.setText(userPasswordDB.getPassword());
         holder.tvID.setText("ID: "+userPasswordDB.getId().toString());
 
-        holder.setViewLongClick(userPasswordDB);
+        holder.setViewLongClick(userPasswordDB,position);
 
         holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -92,11 +92,11 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
             chkPassword=view.findViewById(R.id.chkPassword);
         }
 
-        public void setViewLongClick(final UserPasswordDB item){
+        public void setViewLongClick(final UserPasswordDB item, final int position){
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    EventBus.getDefault().post(new AddEvent(item));
+                    EventBus.getDefault().post(new AddEvent(item,position));
                     return false;
                 }
             });
