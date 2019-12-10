@@ -17,4 +17,7 @@
     <string name="DeleteAlertTitle">Are you really want delete record </string>
     <string name="YesField">Yes</string>
     <string name="NoField">No</string>
+    <string name="NameField">Name:</string>
+    <string name="LoginField">Login:</string>
+    <string name="PasswordField">Pass:</string>
 </resources>

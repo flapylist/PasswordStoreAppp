@@ -77,6 +77,7 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         userPasswordDBList.remove(position);
         notifyItemRemoved(position);
         notifyItemChanged(position,userPasswordDBList.size());
+
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -93,11 +94,10 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
         }
 
         public void setViewLongClick(final UserPasswordDB item, final int position){
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
+                public void onClick(View v) {
                     EventBus.getDefault().post(new AddEvent(item,position));
-                    return false;
                 }
             });
         }

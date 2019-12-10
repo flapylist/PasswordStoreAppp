@@ -3,6 +3,7 @@
     <dimen name="FABMargin">16dp</dimen>
     <dimen name="ListTextSize">18sp</dimen>
     <dimen name="ChkBxTexSize">15sp</dimen>
-    <dimen name="ListTextWidth">350dp</dimen>
+    <dimen name="ListTextWidth">300dp</dimen>
     <dimen name="ListIDTextMarginTop">10dp</dimen>
+    <dimen name="TextViewPasswordWitdh">275dp</dimen>
 </resources>

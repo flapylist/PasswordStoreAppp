@@ -15,17 +15,19 @@
             android:layout_marginTop="@dimen/ListIDTextMarginTop"
             android:hint="@string/id"
             android:textSize="@dimen/ListTextSize"
-            android:layout_toRightOf="@id/tvName"/>
+            android:layout_toRightOf="@id/tvName"
+            />
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="@dimen/ListTextWidth"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
             android:hint="@string/nameHint"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/ListTextSize">
+            android:textSize="@dimen/ListTextSize"
+            android:layout_toRightOf="@id/nameField"
+            android:layout_marginLeft="5dp">
 
         </TextView>
 
@@ -34,20 +36,21 @@
             android:layout_width="@dimen/ListTextWidth"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
-            android:layout_alignParentLeft="true"
             android:hint="@string/loginHint"
             android:textColor="@color/colorPrimaryDark"
-            android:textSize="@dimen/ListTextSize">
+            android:textSize="@dimen/ListTextSize"
+            android:layout_alignLeft="@id/tvName"
+            android:layout_alignRight="@id/tvName">
 
         </TextView>
 
         <TextView
             android:id="@+id/tvPassword"
-            android:layout_width="@dimen/ListTextWidth"
+            android:layout_width="@dimen/TextViewPasswordWitdh"
             android:layout_height="wrap_content"
             android:layout_below="@id/tvLogin"
             android:hint="@string/passwordHint"
-            android:layout_alignParentLeft="true"
+            android:layout_alignLeft="@id/tvName"
             android:inputType="textPassword"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="@dimen/ListTextSize">
@@ -58,11 +61,35 @@
             android:id="@+id/chkPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tvPassword"
-            android:textSize="@dimen/ChkBxTexSize"
-            android:text="@string/ShowPass">
+            android:layout_gravity="end"
+            android:layout_toRightOf="@+id/tvPassword"
+            android:layout_alignBottom="@+id/tvPassword">
 
         </CheckBox>
+
+        <TextView
+            android:id="@+id/nameField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/NameField"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/tvName"/>
+        <TextView
+            android:id="@+id/loginField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/LoginField"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/tvLogin"
+            android:layout_toLeftOf="@id/tvLogin"/>
+        <TextView
+            android:id="@+id/passwordField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/PasswordField"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBottom="@+id/tvPassword"
+            android:layout_toLeftOf="@id/tvPassword"/>
 
     </RelativeLayout>
 </LinearLayout>
