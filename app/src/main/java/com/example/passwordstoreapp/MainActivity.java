@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_listview);
         EventBus.getDefault().register(this);
-        userPasswordDBList=getAllUsers();
         mcontext=this;
 
         ftbtn=findViewById(R.id.floating_action_button);
@@ -51,18 +51,26 @@ public class MainActivity extends AppCompatActivity {
                 addAlert(mcontext);
             }
         });
-
         cl=findViewById(R.id.coordinator);
         recyclerView=findViewById(R.id.recyclerView);
 
-        adapter=new PasswordRecyclerAdapter(this, userPasswordDBList);
-        RecyclerView.LayoutManager layoutManager=new LinearLayoutManager(this);
+        refreshData();
+    }
+
+    public void refreshData(){
+        userPasswordDBList=getAllUsers();
+        adapter=new PasswordRecyclerAdapter(mcontext,userPasswordDBList);
+        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        refreshList(recyclerView,adapter);
 
         ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+
+        DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -74,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDeleteEvent(DeleteEvent event){
         final UserPasswordDB userPasswordDB=userPasswordDBList.get(event.position);
         deleteItem(userPasswordDB);
-        adapter.deleteItem(event.position);
 
         showUndoSnackbar(userPasswordDB,event.position);
     }
@@ -85,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addItem(item);
-                adapter.addItem(item,position);
-
             }
         })
                 .show();
@@ -127,8 +132,6 @@ public class MainActivity extends AppCompatActivity {
                             userPasswordDB.setLogin(etLogin.getText().toString());
                             userPasswordDB.setPassword(etPassword.getText().toString());
                             addItem(userPasswordDB);
-                            adapter.addItem(userPasswordDB);
-
                         }
                     }
                 })
@@ -175,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
                             userPasswordDB.setLogin(etLogin.getText().toString());
                             userPasswordDB.setPassword(etPassword.getText().toString());
                             addItem(userPasswordDB);
-                            adapter.notifyItemChanged(position);
-
                         }
                     }
                 })
@@ -192,10 +193,12 @@ public class MainActivity extends AppCompatActivity {
 
     public void addItem(UserPasswordDB userPasswordDB){
         DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB);
+        refreshData();
     }
 
     public void deleteItem(UserPasswordDB userPasswordDB){
         DatabaseManager.getInstance(getApplicationContext()).deleteItem(userPasswordDB.getId());
+        refreshData();
     }
     public List<UserPasswordDB> getAllUsers(){
         return DatabaseManager.getInstance(getApplicationContext()).getAllItems();
@@ -204,6 +207,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy(Bundle bundle){
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    public static void refreshList(RecyclerView list, RecyclerView.Adapter adapter) {
+        if (list == null) {
+            return;
+        }
+        int selection = 0;
+        int top;
+        LinearLayoutManager layoutManager = (LinearLayoutManager) list.getLayoutManager();
+        if (layoutManager != null) {
+            selection = layoutManager.findFirstVisibleItemPosition();
+        }
+        View v = list.getChildAt(0);
+        top = (v == null) ? 0 : v.getTop();
+        list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        if (layoutManager != null) {
+            layoutManager.scrollToPositionWithOffset(selection, top);
+        }
     }
 
 }
