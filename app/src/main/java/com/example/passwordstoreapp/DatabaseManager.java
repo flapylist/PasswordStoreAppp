@@ -25,16 +25,12 @@ public class DatabaseManager {
     private final static String PASSWORD="password";
     private final static String ID="id";
 
+
     public DatabaseManager(Context context){
         mcontext=context;
-        databaseHelper= OpenHelperManager.getHelper(mcontext,DatabaseHelper.class);
+        this.databaseHelper= OpenHelperManager.getHelper(mcontext,DatabaseHelper.class);
 
             userPasswordDBLongDao=databaseHelper.getItemDao();
-    }
-
-    public static DatabaseManager getInstance(Context context){
-        if(INSTANCE==null)INSTANCE=new DatabaseManager(context);
-        return INSTANCE;
     }
 
     public void deleteItem(Long id) {
@@ -80,7 +76,8 @@ public class DatabaseManager {
 
     public List<UserPasswordDB> getAllItems(){
         try {
-            return userPasswordDBLongDao.queryForAll();
+            QueryBuilder queryBuilder=userPasswordDBLongDao.queryBuilder();
+            return queryBuilder.orderBy(NAME,true).query();
         }catch (SQLException e){
             e.printStackTrace();
             return null;

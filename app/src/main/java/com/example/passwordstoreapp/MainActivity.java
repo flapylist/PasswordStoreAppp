@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     PasswordRecyclerAdapter adapter;
     FloatingActionButton ftbtn;
     CoordinatorLayout cl;
+    private LinearLayoutManager layoutManager;
+    DatabaseComponent component;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.recycler_listview);
         EventBus.getDefault().register(this);
         mcontext=this;
+        component=DaggerDatabaseComponent.builder()
+                .contextModule(new ContextModule(getApplicationContext()))
+                .build();
 
         ftbtn=findViewById(R.id.floating_action_button);
         ftbtn.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         });
         cl=findViewById(R.id.coordinator);
         recyclerView=findViewById(R.id.recyclerView);
+        layoutManager=new LinearLayoutManager(mcontext);
 
         refreshData();
     }
@@ -60,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public void refreshData(){
         userPasswordDBList=getAllUsers();
         adapter=new PasswordRecyclerAdapter(mcontext,userPasswordDBList);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+
         recyclerView.setLayoutManager(layoutManager);
-        refreshList(recyclerView,adapter);
 
         ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(recyclerView);
@@ -71,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,layoutManager.getOrientation());
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        refreshList(recyclerView,adapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -192,12 +199,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addItem(UserPasswordDB userPasswordDB){
-        DatabaseManager.getInstance(getApplicationContext()).insertItem(userPasswordDB);
+        component.getManager().insertItem(userPasswordDB);
         refreshData();
     }
 
     public void deleteItem(UserPasswordDB userPasswordDB){
-        DatabaseManager.getInstance(getApplicationContext()).deleteItem(userPasswordDB.getId());
+        component.getManager().deleteItem(userPasswordDB.getId());
         refreshData();
     }
     public List<UserPasswordDB> getAllUsers(){
@@ -224,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         if (layoutManager != null) {
-            layoutManager.scrollToPositionWithOffset(selection, top);
+            layoutManager.scrollToPosition(selection);
         }
     }
 
