@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         refreshData();
     }
     public List<UserPasswordDB> getAllUsers(){
-        return DatabaseManager.getInstance(getApplicationContext()).getAllItems();
+        return component.getManager().getAllItems();
     }
 
     protected void onDestroy(Bundle bundle){
