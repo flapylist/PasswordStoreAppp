@@ -1,4 +1,4 @@
-package com.example.passwordstoreapp;
+package com.example.passwordstoreapp.ORMLiteCipherStaff;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,7 +10,6 @@ import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseManager {

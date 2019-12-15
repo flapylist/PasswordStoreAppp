@@ -1,4 +1,4 @@
-package com.example.passwordstoreapp;
+package com.example.passwordstoreapp.Dagger2Staff;
 
 import androidx.recyclerview.selection.ItemKeyProvider;
 

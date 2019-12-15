@@ -1,4 +1,4 @@
-package com.example.passwordstoreapp;
+package com.example.passwordstoreapp.ORMLiteCipherStaff;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

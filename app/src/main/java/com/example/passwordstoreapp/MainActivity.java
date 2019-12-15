@@ -3,7 +3,6 @@ package com.example.passwordstoreapp;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -18,6 +17,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.passwordstoreapp.Dagger2Staff.ContextModule;
+import com.example.passwordstoreapp.Dagger2Staff.DatabaseComponent;
+import com.example.passwordstoreapp.EventBusStaff.AddEvent;
+import com.example.passwordstoreapp.EventBusStaff.DeleteEvent;
+import com.example.passwordstoreapp.ORMLiteCipherStaff.UserPasswordDB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -46,9 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.recycler_listview);
         EventBus.getDefault().register(this);
         mcontext=this;
-        component=DaggerDatabaseComponent.builder()
-                .contextModule(new ContextModule(getApplicationContext()))
-                .build();
+       initComponent();
 
         ftbtn=findViewById(R.id.floating_action_button);
         ftbtn.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         refreshData();
     }
 
+    public void initComponent(){
+        component=DaggerDatabaseComponent.builder()
+                .contextModule(new ContextModule(getApplicationContext()))
+                .build();
+    }
     public void refreshData(){
         userPasswordDBList=getAllUsers();
         adapter=new PasswordRecyclerAdapter(mcontext,userPasswordDBList);

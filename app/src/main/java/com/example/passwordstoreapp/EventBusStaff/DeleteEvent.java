@@ -1,7 +1,7 @@
-package com.example.passwordstoreapp;
+package com.example.passwordstoreapp.EventBusStaff;
 
 public class DeleteEvent {
-    int position;
+    public int position;
             public DeleteEvent(int position){
         this.position=position;
             }

@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.passwordstoreapp.EventBusStaff.AddEvent;
+import com.example.passwordstoreapp.ORMLiteCipherStaff.UserPasswordDB;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
