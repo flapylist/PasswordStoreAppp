@@ -1,4 +1,4 @@
-package com.example.passwordstoreapp.ORMLiteCipherStaff;
+package com.example.passwordstoreapp.Database;
 
 import io.michaelrocks.paranoid.Obfuscate;
 

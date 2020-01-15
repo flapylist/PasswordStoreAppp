@@ -4,6 +4,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,11 +20,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.passwordstoreapp.Dagger2Staff.ContextModule;
-import com.example.passwordstoreapp.Dagger2Staff.DatabaseComponent;
-import com.example.passwordstoreapp.EventBusStaff.AddEvent;
+import com.example.passwordstoreapp.Dagger2Staff.*;
+import com.example.passwordstoreapp.Database.Password;
 import com.example.passwordstoreapp.EventBusStaff.DeleteEvent;
-import com.example.passwordstoreapp.ORMLiteCipherStaff.UserPasswordDB;
+import com.example.passwordstoreapp.EventBusStaff.EditEvent;
+import com.example.passwordstoreapp.Repository.DIalogUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -34,212 +37,82 @@ import java.util.List;
 import io.michaelrocks.paranoid.Obfuscate;
 @Obfuscate
 public class MainActivity extends AppCompatActivity {
-    List<UserPasswordDB> userPasswordDBList;
-    Context mcontext;
-    RecyclerView recyclerView;
+
+    List<Password> passwordList;
     PasswordRecyclerAdapter adapter;
-    FloatingActionButton ftbtn;
-    CoordinatorLayout cl;
-    private LinearLayoutManager layoutManager;
-    DatabaseComponent component;
-
-
+    RecyclerView recyclerView;
+    Context context;
+    FloatingActionButton floatActBtn;
+    LinearLayoutManager layoutManager;
+    MyViewModel model;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler_listview);
-        EventBus.getDefault().register(this);
-        mcontext=this;
-       initComponent();
-
-        ftbtn=findViewById(R.id.floating_action_button);
-        ftbtn.setOnClickListener(new View.OnClickListener() {
+        context=this;
+        recyclerView=findViewById(R.id.recyclerView);
+        layoutManager=new LinearLayoutManager(context);
+        floatActBtn=findViewById(R.id.floating_action_button);
+        floatActBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addAlert(mcontext);
+                DIalogUtils.showInsertAlert(context,model);
             }
         });
-        cl=findViewById(R.id.coordinator);
-        recyclerView=findViewById(R.id.recyclerView);
-        layoutManager=new LinearLayoutManager(mcontext);
 
-        refreshData();
+        model= ViewModelProviders.of(this).get(MyViewModel.class);
+        model.getAll().observe(this, new Observer<List<Password>>() {
+            @Override
+            public void onChanged(List<Password> passwords) {
+                refreshData(passwords);
+            }
+        });
+        passwordList=model.getAll().getValue();
+        refreshData(passwordList);
+        }
+
+        public void refreshData(List<Password> passwords){
+            passwordList=passwords;
+            adapter=new PasswordRecyclerAdapter(context,passwordList);
+
+            recyclerView.setLayoutManager(layoutManager);
+
+            ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+            DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,layoutManager.getOrientation());
+            recyclerView.addItemDecoration(dividerItemDecoration);
+
+            refreshList(recyclerView,adapter);
     }
 
-    public void initComponent(){
-        component=DaggerDatabaseComponent.builder()
-                .contextModule(new ContextModule(getApplicationContext()))
-                .build();
-    }
-    public void refreshData(){
-        userPasswordDBList=getAllUsers();
-        adapter=new PasswordRecyclerAdapter(mcontext,userPasswordDBList);
+    public void refreshList(RecyclerView list, RecyclerView.Adapter adapter){
+        if(list==null) return;
 
-        recyclerView.setLayoutManager(layoutManager);
-
-        ItemTouchHelper itemTouchHelper=new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
-
-
-        DividerItemDecoration dividerItemDecoration=new DividerItemDecoration(this,layoutManager.getOrientation());
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
-        refreshList(recyclerView,adapter);
+        int bottomItem=0;
+        int topItem=0;
+        LinearLayoutManager linearLayoutManager=(LinearLayoutManager)list.getLayoutManager();
+        if(layoutManager!=null){
+            bottomItem=linearLayoutManager.findFirstVisibleItemPosition();
+        }
+        View v=list.getChildAt(0);
+        topItem=v==null ? 0 : v.getTop();
+        list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        if(layoutManager!=null) linearLayoutManager.scrollToPosition(bottomItem);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAddEvent(AddEvent event){
-        editAlert(mcontext,event.item, event.position);
+    public void onEditEvent(EditEvent event){
+        DIalogUtils.showEdittAlert(context,event.item,model);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteEvent(DeleteEvent event){
-        final UserPasswordDB userPasswordDB=userPasswordDBList.get(event.position);
-        deleteItem(userPasswordDB);
+        Password password=passwordList.get(event.position);
+        model.delete(password);
 
-        showUndoSnackbar(userPasswordDB,event.position);
+        DIalogUtils.showUndoSnackbar(recyclerView,password,model);
     }
-
-    private void showUndoSnackbar(final UserPasswordDB item, final int position){
-        Snackbar snackbar=Snackbar.make(cl,"Item deleted",Snackbar.LENGTH_LONG);
-        snackbar.setAction("Return delete", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addItem(item);
-            }
-        })
-                .show();
-    }
-
-
-
-
-    public void addAlert(Context context){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        final EditText etName,etLogin,etPassword;
-        etName=new EditText(context);
-        etName.setWidth(80);
-        etName.setHint(R.string.nameHint);
-        etName.requestFocus();
-        etLogin=new EditText(context);
-        etLogin.setWidth(80);
-        etLogin.setHint(R.string.loginHint);
-        etPassword=new EditText(context);
-        etPassword.setWidth(80);
-        etPassword.setHint(R.string.passwordHint);
-        etPassword.setTransformationMethod(new PasswordTransformationMethod());
-
-        LinearLayout linearLayout=new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(etName);
-        linearLayout.addView(etLogin);
-        linearLayout.addView(etPassword);
-
-        builder.setTitle(R.string.AddAlertTitle)
-                .setView(linearLayout)
-                .setPositiveButton(R.string.SaveField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        UserPasswordDB userPasswordDB=new UserPasswordDB();
-                        if(etName!=null && etLogin!=null && etPassword!=null) {
-                            userPasswordDB.setName(etName.getText().toString());
-                            userPasswordDB.setLogin(etLogin.getText().toString());
-                            userPasswordDB.setPassword(etPassword.getText().toString());
-                            addItem(userPasswordDB);
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.CancelField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert=builder.create();
-        alert.show();
-
-    }
-
-
-    public void editAlert(Context context, final UserPasswordDB userPasswordDB, final int position){
-        AlertDialog.Builder builder=new AlertDialog.Builder(context);
-        final EditText etName,etLogin,etPassword;
-        etName=new EditText(context);
-        etName.setWidth(80);
-        etName.setText(userPasswordDB.getName().toString());
-        etName.requestFocus();
-        etLogin=new EditText(context);
-        etLogin.setWidth(80);
-        etLogin.setText(userPasswordDB.getLogin().toString());
-        etPassword=new EditText(context);
-        etPassword.setWidth(80);
-        etPassword.setText(userPasswordDB.getPassword().toString());
-        etPassword.setTransformationMethod(new PasswordTransformationMethod());
-
-        LinearLayout linearLayout=new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(etName);
-        linearLayout.addView(etLogin);
-        linearLayout.addView(etPassword);
-
-        builder.setTitle(R.string.EditAlertTitle)
-                .setView(linearLayout)
-                .setPositiveButton(R.string.SaveField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(etName!=null && etLogin!=null && etPassword!=null) {
-                            userPasswordDB.setName(etName.getText().toString());
-                            userPasswordDB.setLogin(etLogin.getText().toString());
-                            userPasswordDB.setPassword(etPassword.getText().toString());
-                            addItem(userPasswordDB);
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.CancelField, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert=builder.create();
-        alert.show();
-    }
-
-    public void addItem(UserPasswordDB userPasswordDB){
-        component.getManager().insertItem(userPasswordDB);
-        refreshData();
-    }
-
-    public void deleteItem(UserPasswordDB userPasswordDB){
-        component.getManager().deleteItem(userPasswordDB.getId());
-        refreshData();
-    }
-    public List<UserPasswordDB> getAllUsers(){
-        return component.getManager().getAllItems();
-    }
-
-    protected void onDestroy(Bundle bundle){
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
-    public static void refreshList(RecyclerView list, RecyclerView.Adapter adapter) {
-        if (list == null) {
-            return;
-        }
-        int selection = 0;
-        int top;
-        LinearLayoutManager layoutManager = (LinearLayoutManager) list.getLayoutManager();
-        if (layoutManager != null) {
-            selection = layoutManager.findFirstVisibleItemPosition();
-        }
-        View v = list.getChildAt(0);
-        top = (v == null) ? 0 : v.getTop();
-        list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        if (layoutManager != null) {
-            layoutManager.scrollToPosition(selection);
-        }
-    }
-
 }

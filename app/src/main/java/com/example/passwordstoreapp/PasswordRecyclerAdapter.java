@@ -11,38 +11,37 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.passwordstoreapp.EventBusStaff.AddEvent;
-import com.example.passwordstoreapp.ORMLiteCipherStaff.UserPasswordDB;
-
+import com.example.passwordstoreapp.Database.Password;
+import com.example.passwordstoreapp.EventBusStaff.EditEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecyclerAdapter.ViewHolder> {
     private LayoutInflater inflater;
-    private List<UserPasswordDB> userPasswordDBList;
+    private List<Password> passwordList;
     private Context mcontext;
 
-    PasswordRecyclerAdapter(Context context, List<UserPasswordDB> userPasswordDBList) {
-        this.userPasswordDBList = userPasswordDBList;
+    PasswordRecyclerAdapter(Context context, List<Password> passwordList) {
+        this.passwordList=passwordList;
         inflater = LayoutInflater.from(context);
         mcontext = context;
     }
 
     public PasswordRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.list_view,parent,false);
+        View view = inflater.inflate(R.layout.list_view,parent, false);
         return new ViewHolder(view);
     }
 
     public void onBindViewHolder(final PasswordRecyclerAdapter.ViewHolder holder, final int position){
-        final UserPasswordDB userPasswordDB=userPasswordDBList.get(position);
+        final Password password=passwordList.get(position);
 
-        holder.tvName.setText(userPasswordDB.getName());
-        holder.tvLogin.setText(userPasswordDB.getLogin());
-        holder.tvPassword.setText(userPasswordDB.getPassword());
-        holder.tvID.setText("ID: "+userPasswordDB.getId().toString());
+        holder.tvName.setText(password.getName());
+        holder.tvLogin.setText(password.getLogin());
+        holder.tvPassword.setText(password.getPassword());
+        holder.tvID.setText("ID: "+password.getPassword());
 
-        holder.setViewLongClick(userPasswordDB,position);
+        holder.setViewOnClick(password,position);
 
         holder.chkPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -58,29 +57,9 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
     }
 
 
-
-    public void addItem(UserPasswordDB userPasswordDB){
-        userPasswordDBList.add(userPasswordDBList.size(),userPasswordDB);
-        notifyItemInserted(userPasswordDBList.size());
-
-    }
-
-    public void addItem(UserPasswordDB userPasswordDB,int position){
-        userPasswordDBList.add(position,userPasswordDB);
-        notifyItemInserted(position);
-
-    }
-
     @Override
     public int getItemCount(){
-        return userPasswordDBList.size();
-    }
-
-    public void deleteItem(int position){
-        userPasswordDBList.remove(position);
-        notifyItemRemoved(position);
-        notifyItemChanged(position,userPasswordDBList.size());
-
+        return passwordList.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -96,11 +75,11 @@ public class PasswordRecyclerAdapter extends RecyclerView.Adapter<PasswordRecycl
             chkPassword=view.findViewById(R.id.chkPassword);
         }
 
-        public void setViewLongClick(final UserPasswordDB item, final int position){
+        public void setViewOnClick(final Password item, final int position){
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EventBus.getDefault().post(new AddEvent(item,position));
+                    EventBus.getDefault().post(new EditEvent(item,position));
                 }
             });
         }
